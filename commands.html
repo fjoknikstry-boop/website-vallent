@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Commands — VALLENT EXS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@500;700;900&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0a0605;
+    --surface:#130b0c;
+    --surface-2:#1c1112;
+    --line: rgba(245,240,236,0.09);
+    --crimson:#a80f2c;
+    --crimson-deep:#3d0010;
+    --crimson-glow: rgba(168,15,44,0.35);
+    --gold:#f5a623;
+    --gold-glow: rgba(245,166,35,0.30);
+    --ink:#f5f0ec;
+    --muted:#a3908d;
+    --muted-2:#6e5c5a;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{ background:var(--void); color:var(--ink); font-family:'Outfit', sans-serif; font-weight:400; }
+  body::before{
+    content:""; position:fixed; inset:0;
+    background-image: radial-gradient(circle at 10% 4%, var(--crimson-glow), transparent 30%), radial-gradient(circle at 95% 92%, var(--gold-glow), transparent 34%);
+    opacity:0.22; pointer-events:none; z-index:0;
+  }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; position:relative; z-index:2; }
+  h1,.display{ font-family:'Big Shoulders', sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:0.01em; line-height:0.95; }
+  .mono{ font-family:'JetBrains Mono', monospace; letter-spacing:0.03em; }
+  a{ color:inherit; }
+  .hex{ --s:40px; width:var(--s); height:calc(var(--s)*1.02); clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+  nav{ position:sticky; top:0; z-index:50; backdrop-filter:blur(14px); background:rgba(10,6,5,0.72); border-bottom:1px solid var(--line); }
+  nav .row{ display:flex; align-items:center; justify-content:space-between; padding:18px 0; }
+  .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; }
+  .brand .hex{ background:linear-gradient(155deg, var(--crimson), var(--crimson-deep)); box-shadow:0 0 22px var(--crimson-glow); }
+  .brand .hex span{ font-family:'Big Shoulders',sans-serif; font-weight:900; font-size:20px; color:var(--ink); }
+  .brand-name{ font-family:'Big Shoulders',sans-serif; font-weight:700; font-size:19px; letter-spacing:0.03em; }
+  .brand-name b{ color:var(--gold); font-weight:900; }
+  .nav-links{ display:flex; align-items:center; gap:36px; }
+  .nav-links a{ font-size:13.5px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:0.09em; text-decoration:none; }
+  .nav-links a:hover{ color:var(--ink); }
+  .nav-links a.active{ color:var(--gold); }
+  .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 20px; font-weight:600; font-size:13px; clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px); text-decoration:none; }
+  .btn-primary{ background:linear-gradient(135deg, var(--crimson), #5c0a1a); color:#fff; }
+
+  .page-head{ padding:64px 0 32px; }
+  .eyebrow{ display:inline-flex; align-items:center; gap:10px; font-size:12px; color:var(--gold); text-transform:uppercase; letter-spacing:0.18em; margin-bottom:18px; }
+  .eyebrow::before{ content:""; width:26px; height:1px; background:var(--gold); }
+  .page-head h1{ font-size:clamp(34px,4.6vw,52px); margin-bottom:14px; }
+  .page-head p{ color:var(--muted); font-size:15px; max-width:600px; line-height:1.6; }
+
+  /* ---------- search + legend ---------- */
+  .toolbar{ padding-bottom:36px; }
+  .search-box{
+    position:relative; max-width:420px;
+  }
+  .search-box input{
+    width:100%; background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:13px 16px 13px 42px; font-family:'Outfit',sans-serif; font-size:14px; color:var(--ink);
+    outline:none; transition:border-color .2s;
+  }
+  .search-box input::placeholder{ color:var(--muted-2); }
+  .search-box input:focus{ border-color:var(--crimson); }
+  .search-box svg{ position:absolute; left:14px; top:50%; transform:translateY(-50%); opacity:0.5; }
+  .legend{ display:flex; gap:20px; margin-top:16px; flex-wrap:wrap; }
+  .legend-item{ display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted-2); }
+  .legend-chip{ font-size:10px; padding:2px 7px; border-radius:4px; font-weight:600; letter-spacing:0.03em; }
+  .chip-slash{ background:rgba(168,15,44,0.18); color:#e8536c; }
+  .chip-premium{ background:rgba(245,166,35,0.18); color:var(--gold); }
+  .chip-admin{ background:rgba(255,255,255,0.08); color:var(--muted); }
+
+  /* ---------- layout ---------- */
+  .doc-layout{ display:grid; grid-template-columns:230px 1fr; gap:48px; padding-bottom:110px; align-items:start; }
+  .toc{ position:sticky; top:96px; max-height:calc(100vh - 120px); overflow-y:auto; }
+  .toc-label{ font-size:11px; color:var(--muted-2); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:12px; }
+  .toc a{
+    display:flex; align-items:center; gap:9px;
+    font-size:13px; color:var(--muted); text-decoration:none; padding:7px 0;
+    border-left:2px solid transparent; padding-left:13px; transition:color .2s, border-color .2s;
+  }
+  .toc a:hover, .toc a.active{ color:var(--ink); border-left-color:var(--crimson); }
+  .toc a .cnt{ margin-left:auto; font-size:10.5px; color:var(--muted-2); }
+
+  .cat{ margin-bottom:44px; scroll-margin-top:96px; }
+  .cat-head{ display:flex; align-items:center; gap:14px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+  .cat-head .hex{ width:36px; background:var(--surface-2); border:1px solid var(--line); font-size:16px; }
+  .cat-head h2{ font-family:'Outfit',sans-serif; text-transform:none; letter-spacing:0; font-weight:700; font-size:19px; }
+  .cat-note{ font-size:13px; color:var(--muted-2); margin-bottom:16px; line-height:1.6; }
+
+  .cmd-list{ display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .cmd-row{ background:var(--void); padding:16px 20px; display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap; }
+  .cmd-row:hover{ background:var(--surface); }
+  .cmd-name{ font-family:'JetBrains Mono',monospace; font-size:13.5px; color:var(--ink); background:var(--surface-2); padding:4px 10px; border-radius:5px; white-space:nowrap; flex-shrink:0; }
+  .cmd-desc{ flex:1; min-width:200px; font-size:13.5px; color:var(--muted); line-height:1.6; padding-top:3px; }
+  .cmd-tags{ display:flex; gap:6px; flex-shrink:0; }
+  .chip{ font-size:9.5px; padding:3px 7px; border-radius:4px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; height:fit-content; }
+
+  .hidden{ display:none !important; }
+  .empty-state{ text-align:center; padding:60px 0; color:var(--muted-2); font-size:14px; display:none; }
+  .empty-state.show{ display:block; }
+
+  footer{ padding:48px 0 40px; border-top:1px solid var(--line); }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+  .foot-links{ display:flex; gap:24px; flex-wrap:wrap; }
+  .foot-links a{ font-size:13px; color:var(--muted); text-decoration:none; }
+  .foot-links a:hover{ color:var(--ink); }
+  .copyright{ font-size:12px; color:var(--muted-2); margin-top:24px; }
+
+  @media (max-width: 880px){
+    .doc-layout{ grid-template-columns:1fr; }
+    .toc{ position:static; display:flex; flex-wrap:wrap; gap:4px 16px; max-height:none; padding-bottom:20px; border-bottom:1px solid var(--line); margin-bottom:20px; }
+    .toc-label{ display:none; }
+    .toc a{ padding:4px 0; border-left:none; }
+    .toc a .cnt{ display:none; }
+    .nav-links{ display:none; }
+  }
+  @media (max-width: 560px){
+    .wrap{ padding:0 20px; }
+    .cmd-row{ flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap row">
+    <a href="index.html" class="brand">
+      <div class="hex"><span>V</span></div>
+      <div class="brand-name">VALLENT <b>EXS</b></div>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="#" class="active">Commands</a>
+      <a href="#">Support</a>
+    </div>
+    <a href="#" class="btn btn-primary">Add to Discord</a>
+  </div>
+</nav>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="eyebrow">Documentation</div>
+    <h1>COMMAND<br>REFERENCE</h1>
+    <p>Every command VALLENT EXS runs, grouped by system. Most work with both a prefix (shown here) and as a <span class="mono" style="color:var(--muted)">/slash</span> command in Discord.</p>
+  </div>
+</div>
+
+<div class="wrap toolbar">
+  <div class="search-box">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a3908d" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="text" id="cmdSearch" placeholder="Search commands — e.g. ticket, rank, antinuke...">
+  </div>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-chip chip-premium">PREMIUM</span> requires Premium</div>
+    <div class="legend-item"><span class="legend-chip chip-admin">ADMIN</span> requires Manage Server or higher</div>
+    <div class="legend-item"><span class="legend-chip chip-slash">SLASH ONLY</span> no prefix version</div>
+  </div>
+</div>
+
+<div class="wrap doc-layout">
+  <div class="toc" id="toc">
+    <div class="toc-label">Systems</div>
+    <!-- filled by JS from the category list below, but kept as real anchors for no-JS fallback -->
+    <a href="#moderation">Moderation</a>
+    <a href="#role_voice">Role &amp; Voice</a>
+    <a href="#info">Info</a>
+    <a href="#embed">Embed Builder</a>
+    <a href="#component">Message Components</a>
+    <a href="#afk">AFK System</a>
+    <a href="#ticket">Ticket</a>
+    <a href="#level">Level &amp; XP</a>
+    <a href="#giveaway">Giveaway</a>
+    <a href="#antispam">Antispam</a>
+    <a href="#antinuke">Anti-Nuke</a>
+    <a href="#verification">Verification</a>
+    <a href="#automod">AutoMod</a>
+    <a href="#autoresponse">Auto-Response</a>
+    <a href="#boost">Server Boost</a>
+  </div>
+
+  <div id="cmdRoot">
+
+    <div class="cat" id="moderation">
+      <div class="cat-head"><div class="hex">🛠️</div><h2>Moderation</h2></div>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">kick</span><span class="cmd-desc">Kick a member from the server.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">ban</span><span class="cmd-desc">Ban a member from the server.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">unban</span><span class="cmd-desc">Lift a ban on a user by ID.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">timeout</span><span class="cmd-desc">Time out a member for a set duration.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">untimeout</span><span class="cmd-desc">Remove an active timeout early.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">warn</span><span class="cmd-desc">Log a warning against a member.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">warnings</span><span class="cmd-desc">View a member's warning history.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">unwarn</span><span class="cmd-desc">Remove a specific warning.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">clearwarnings</span><span class="cmd-desc">Clear all warnings for a member.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">purge</span><span class="cmd-desc">Bulk-delete messages in a channel.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">lock / unlock</span><span class="cmd-desc">Lock or unlock a channel from sending messages.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">slowmode</span><span class="cmd-desc">Set a slowmode delay on the current channel.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">hide / unhide</span><span class="cmd-desc">Hide or reveal a channel for @everyone.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="role_voice">
+      <div class="cat-head"><div class="hex">🎭</div><h2>Role &amp; Voice</h2></div>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">addrole</span><span class="cmd-desc">Add a role to a member.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">removerole</span><span class="cmd-desc">Remove a role from a member.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">move</span><span class="cmd-desc">Move a member to another voice channel.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="info">
+      <div class="cat-head"><div class="hex">ℹ️</div><h2>Info</h2></div>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">userinfo</span><span class="cmd-desc">Detailed info about a member.</span></div>
+        <div class="cmd-row"><span class="cmd-name">serverinfo</span><span class="cmd-desc">Detailed info about the current server.</span></div>
+        <div class="cmd-row"><span class="cmd-name">avatar</span><span class="cmd-desc">View a member's full-size avatar.</span></div>
+        <div class="cmd-row"><span class="cmd-name">ping</span><span class="cmd-desc">Check the bot's latency.</span></div>
+        <div class="cmd-row"><span class="cmd-name">addemoji</span><span class="cmd-desc">Add a custom emoji to the server from an image or existing emoji.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">profile</span><span class="cmd-desc">View your ID card — hierarchy, Premium status, badges, join dates.</span></div>
+        <div class="cmd-row"><span class="cmd-name">idcardbg</span><span class="cmd-desc">Set a custom background image for your ID card only.</span><span class="cmd-tags"><span class="chip chip-premium">Premium</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">idcardcolor</span><span class="cmd-desc">Set a custom 2–3 color gradient for your ID card only.</span><span class="cmd-tags"><span class="chip chip-premium">Premium</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="embed">
+      <div class="cat-head"><div class="hex">🖼️</div><h2>Embed Builder</h2></div>
+      <p class="cat-note">A per-user draft you build piece by piece, then send whenever it's ready. Admin/owner only.</p>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">embed title / description / append / separator</span><span class="cmd-desc">Write the embed's content.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">embed thumbnail / banner / color</span><span class="cmd-desc">Style it — URL or attach an image directly.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">embed channel #channel</span><span class="cmd-desc">Choose where it'll be sent.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">embed edit &lt;link/ID&gt;</span><span class="cmd-desc">Load an existing message back into the draft to edit it.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">embed link add / remove / list</span><span class="cmd-desc">Attach link buttons below the embed.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">embed preview / send / reset</span><span class="cmd-desc">Preview the draft, publish it, or start over.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="component">
+      <div class="cat-head"><div class="hex">🔘</div><h2>Message Component Builder</h2></div>
+      <p class="cat-note">Same builder as Embed, plus interactive buttons. Buttons can be a <b style="color:var(--ink)">link</b> (opens a URL) or a <b style="color:var(--ink)">response</b> (shows the clicker an ephemeral message). Reuse the same ID later to edit that message instead of posting a new one. Admin/owner only.</p>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">component &lt;id&gt; #channel</span><span class="cmd-desc">Open the builder for a given message ID and target channel.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="afk">
+      <div class="cat-head"><div class="hex">💤</div><h2>AFK System</h2></div>
+      <p class="cat-note">Sending any message automatically clears your AFK status. Anyone who @mentions you while you're AFK gets notified with your reason. Only a limited number of members can be AFK at once per server — voting for the bot temporarily unlocks a slot once it's full.</p>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">afk [reason]</span><span class="cmd-desc">Set yourself as AFK, optionally with a reason. Alias: <span class="mono">away</span>.</span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="ticket">
+      <div class="cat-head"><div class="hex">🎫</div><h2>Ticket</h2></div>
+      <p class="cat-note">Each ticket comes with Claim and Close buttons for staff.</p>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">ticket setup</span><span class="cmd-desc">Initial ticket system configuration.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">ticket panel</span><span class="cmd-desc">Post a panel members can open tickets from.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">ticket edit</span><span class="cmd-desc">Edit an existing panel.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">ticket welcome</span><span class="cmd-desc">Set the message shown when a ticket opens.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">ticket list</span><span class="cmd-desc">List all open tickets.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">ticket delete / close</span><span class="cmd-desc">Remove or close a ticket.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">/ticketpanel</span><span class="cmd-desc">Full visual builder — title, description, welcome message, thumbnail, banner, color, and button/dropdown style, styled like the embed builder.</span><span class="cmd-tags"><span class="chip chip-slash">Slash only</span><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="level">
+      <div class="cat-head"><div class="hex">📈</div><h2>Level &amp; XP</h2></div>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">rank</span><span class="cmd-desc">View your rank card — level, XP progress, rank on the server.</span></div>
+        <div class="cmd-row"><span class="cmd-name">rankbg</span><span class="cmd-desc">Set a custom background for your rank &amp; level-up cards.</span><span class="cmd-tags"><span class="chip chip-premium">Premium</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">rankcolor</span><span class="cmd-desc">Set a custom 2–3 color gradient for your rank &amp; level-up cards.</span><span class="cmd-tags"><span class="chip chip-premium">Premium</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">leaderboard</span><span class="cmd-desc">View the server's XP leaderboard. Alias: <span class="mono">lb</span>.</span></div>
+        <div class="cmd-row"><span class="cmd-name">level toggle / setchannel / status</span><span class="cmd-desc">Turn leveling on/off, set the level-up announcement channel, and check current settings.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">xp</span><span class="cmd-desc">Manage a member's XP directly.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">vote</span><span class="cmd-desc">Vote for the bot on top.gg for a temporary XP boost. Alias: <span class="mono">v</span>.</span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="giveaway">
+      <div class="cat-head"><div class="hex">🎉</div><h2>Giveaway</h2></div>
+      <p class="cat-note">Entry is button-based — click Join Giveaway to enter, Participants to see who's in. Optional flags: <span class="mono">--role &lt;id&gt;</span> to require a role to enter, <span class="mono">--winrole &lt;id&gt;</span> to grant a role to winners.</p>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">giveaway start</span><span class="cmd-desc">Start a new giveaway.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">giveaway end</span><span class="cmd-desc">End a giveaway early and draw winners now.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">giveaway reroll</span><span class="cmd-desc">Draw new winner(s) from an ended giveaway.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">giveaway list</span><span class="cmd-desc">List currently active giveaways.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="antispam">
+      <div class="cat-head"><div class="hex">🛡️</div><h2>Antispam</h2></div>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">antispam setchannel / logchannel</span><span class="cmd-desc">Configure where alerts get logged.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">antispam punishment / threshold / flood</span><span class="cmd-desc">Tune what counts as spam and how it's handled.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">antispam ignore</span><span class="cmd-desc">Exempt a channel or role from spam detection.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">antispam status</span><span class="cmd-desc">View the current antispam configuration.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="antinuke">
+      <div class="cat-head"><div class="hex">🛡️</div><h2>Anti-Nuke</h2></div>
+      <p class="cat-note">Reads the Discord audit log in real time — mass channel/role deletes, mass bans, and dangerous permission grants get caught and punished automatically.</p>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">antinuke enable / disable</span><span class="cmd-desc">Turn anti-nuke protection on or off.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">antinuke logchannel</span><span class="cmd-desc">Set where anti-nuke alerts are posted.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">antinuke punishment</span><span class="cmd-desc">Choose what happens to whoever trips it (strip roles / kick / ban).</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">antinuke whitelist</span><span class="cmd-desc">Exempt trusted staff from detection.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">antinuke status</span><span class="cmd-desc">View the current anti-nuke configuration.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="verification">
+      <div class="cat-head"><div class="hex">🔐</div><h2>Verification</h2></div>
+      <p class="cat-note">A captcha gate new members pass through before they can see the rest of the server.</p>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">verification channel / unverifiedrole / verifiedrole / logchannel</span><span class="cmd-desc">Core setup — where the gate lives and which roles it swaps.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">verification enable / disable</span><span class="cmd-desc">Turn the verification gate on or off.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">verification send</span><span class="cmd-desc">Post the verification panel.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">verification status</span><span class="cmd-desc">View the current verification configuration.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="automod">
+      <div class="cat-head"><div class="hex">🤖</div><h2>AutoMod</h2></div>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">automod setup</span><span class="cmd-desc">Create a native Discord AutoMod rule (blocks profanity, sexual content, slurs).</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">automod list</span><span class="cmd-desc">List active AutoMod rules the bot manages.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">automod remove &lt;rule_id&gt;</span><span class="cmd-desc">Remove a specific rule.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="autoresponse">
+      <div class="cat-head"><div class="hex">💬</div><h2>Auto-Response</h2></div>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">autoresponse add &lt;trigger&gt; | &lt;response&gt;</span><span class="cmd-desc">Add a trigger phrase and its automatic response.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">autoresponse remove / list</span><span class="cmd-desc">Remove or list configured triggers.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">autoresponse match</span><span class="cmd-desc">Test what a given message would trigger.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+        <div class="cmd-row"><span class="cmd-name">autoresponse toggle</span><span class="cmd-desc">Turn the auto-response system on or off.</span><span class="cmd-tags"><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+    <div class="cat" id="boost">
+      <div class="cat-head"><div class="hex">🎉</div><h2>Server Boost</h2></div>
+      <div class="cmd-list">
+        <div class="cmd-row"><span class="cmd-name">/boostconfig</span><span class="cmd-desc">Configure the server boost notification channel and appearance.</span><span class="cmd-tags"><span class="chip chip-slash">Slash only</span><span class="chip chip-admin">Admin</span></span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="empty-state" id="emptyState">No commands match your search.</div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="brand">
+        <div class="hex" style="width:32px;"><span style="font-size:15px;">V</span></div>
+        <div class="brand-name">VALLENT <b>EXS</b></div>
+      </div>
+      <div class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="legal.html">Legal</a>
+        <a href="#">Support Server</a>
+      </div>
+    </div>
+    <div class="copyright">© 2026 VALLENT EXS. Not affiliated with Discord Inc.</div>
+  </div>
+</footer>
+
+<script>
+  // ---- search/filter ----
+  const search = document.getElementById('cmdSearch');
+  const cats = Array.from(document.querySelectorAll('.cat'));
+  const empty = document.getElementById('emptyState');
+
+  search.addEventListener('input', () => {
+    const q = search.value.trim().toLowerCase();
+    let anyVisible = false;
+    cats.forEach(cat => {
+      const rows = Array.from(cat.querySelectorAll('.cmd-row'));
+      let catHasMatch = false;
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const match = q === '' || text.includes(q);
+        row.classList.toggle('hidden', !match);
+        if (match) catHasMatch = true;
+      });
+      cat.classList.toggle('hidden', !catHasMatch);
+      if (catHasMatch) anyVisible = true;
+    });
+    empty.classList.toggle('show', !anyVisible);
+  });
+
+  // ---- active TOC highlight ----
+  const links = document.querySelectorAll('.toc a');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      const link = document.querySelector(`.toc a[href="#${en.target.id}"]`);
+      if (!link) return;
+      if (en.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-15% 0px -75% 0px' });
+  cats.forEach(c => io.observe(c));
+</script>
+
+</body>
+</html>
