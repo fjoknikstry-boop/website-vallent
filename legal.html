@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Privacy Policy & Terms of Service — VALLENT EXS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@500;700;900&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0a0605;
+    --surface:#130b0c;
+    --surface-2:#1c1112;
+    --line: rgba(245,240,236,0.09);
+    --crimson:#a80f2c;
+    --crimson-deep:#3d0010;
+    --crimson-glow: rgba(168,15,44,0.35);
+    --gold:#f5a623;
+    --gold-glow: rgba(245,166,35,0.30);
+    --ink:#f5f0ec;
+    --muted:#a3908d;
+    --muted-2:#6e5c5a;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{ background:var(--void); color:var(--ink); font-family:'Outfit', sans-serif; font-weight:400; }
+  body::before{
+    content:""; position:fixed; inset:0;
+    background-image: radial-gradient(circle at 10% 4%, var(--crimson-glow), transparent 30%), radial-gradient(circle at 95% 92%, var(--gold-glow), transparent 34%);
+    opacity:0.22; pointer-events:none; z-index:0;
+  }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; position:relative; z-index:2; }
+  h1,.display{ font-family:'Big Shoulders', sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:0.01em; line-height:0.95; }
+  .mono{ font-family:'JetBrains Mono', monospace; letter-spacing:0.06em; }
+  a{ color:inherit; }
+  .hex{ --s:40px; width:var(--s); height:calc(var(--s)*1.02); clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+  nav{ position:sticky; top:0; z-index:50; backdrop-filter:blur(14px); background:rgba(10,6,5,0.72); border-bottom:1px solid var(--line); }
+  nav .row{ display:flex; align-items:center; justify-content:space-between; padding:18px 0; }
+  .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; }
+  .brand .hex{ background:linear-gradient(155deg, var(--crimson), var(--crimson-deep)); box-shadow:0 0 22px var(--crimson-glow); }
+  .brand .hex span{ font-family:'Big Shoulders',sans-serif; font-weight:900; font-size:20px; color:var(--ink); }
+  .brand-name{ font-family:'Big Shoulders',sans-serif; font-weight:700; font-size:19px; letter-spacing:0.03em; }
+  .brand-name b{ color:var(--gold); font-weight:900; }
+  .nav-links{ display:flex; align-items:center; gap:36px; }
+  .nav-links a{ font-size:13.5px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:0.09em; text-decoration:none; }
+  .nav-links a:hover{ color:var(--ink); }
+  .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 20px; font-weight:600; font-size:13px; clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px); text-decoration:none; }
+  .btn-primary{ background:linear-gradient(135deg, var(--crimson), #5c0a1a); color:#fff; }
+
+  .page-head{ padding:64px 0 40px; }
+  .eyebrow{ display:inline-flex; align-items:center; gap:10px; font-size:12px; color:var(--gold); text-transform:uppercase; letter-spacing:0.18em; margin-bottom:18px; }
+  .eyebrow::before{ content:""; width:26px; height:1px; background:var(--gold); }
+  .page-head h1{ font-size:clamp(34px,4.6vw,52px); margin-bottom:14px; }
+  .page-head p{ color:var(--muted); font-size:15px; max-width:600px; line-height:1.6; }
+  .updated{ display:inline-block; margin-top:18px; font-size:12px; color:var(--muted-2); border:1px solid var(--line); padding:6px 12px; border-radius:20px; }
+
+  .disclaimer{
+    margin:0 0 48px; padding:20px 24px; border:1px solid rgba(245,166,35,0.3); border-radius:10px;
+    background:rgba(245,166,35,0.05); font-size:13.5px; color:var(--muted); line-height:1.6;
+  }
+  .disclaimer b{ color:var(--gold); }
+
+  .doc-layout{ display:grid; grid-template-columns:240px 1fr; gap:56px; padding-bottom:100px; align-items:start; }
+  .toc{ position:sticky; top:96px; }
+  .toc-label{ font-size:11px; color:var(--muted-2); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:14px; }
+  .toc a{
+    display:block; font-size:13px; color:var(--muted); text-decoration:none; padding:7px 0;
+    border-left:2px solid transparent; padding-left:14px; transition:color .2s, border-color .2s;
+  }
+  .toc a:hover, .toc a.active{ color:var(--ink); border-left-color:var(--crimson); }
+  .toc .toc-group{ font-size:10.5px; color:var(--gold); text-transform:uppercase; letter-spacing:0.1em; margin:18px 0 4px; padding-left:14px; }
+  .toc .toc-group:first-child{ margin-top:0; }
+
+  .doc{ max-width:720px; }
+  .doc section{ margin-bottom:52px; scroll-margin-top:96px; }
+  .doc h2{
+    font-family:'Big Shoulders',sans-serif; font-weight:800; text-transform:uppercase; font-size:22px;
+    letter-spacing:0.01em; margin-bottom:16px; display:flex; align-items:center; gap:12px;
+  }
+  .doc h2 .num{ font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--crimson); font-weight:400; }
+  .doc h3{ font-family:'Outfit',sans-serif; font-weight:600; font-size:15.5px; margin:22px 0 8px; color:var(--ink); }
+  .doc p{ font-size:14.5px; color:var(--muted); line-height:1.75; margin-bottom:14px; }
+  .doc p b, .doc li b{ color:var(--ink); font-weight:600; }
+  .doc ul{ margin:0 0 14px 20px; }
+  .doc li{ font-size:14.5px; color:var(--muted); line-height:1.75; margin-bottom:6px; }
+  .doc .divider{ height:1px; background:var(--line); margin:52px 0; border:none; }
+  .doc .part-tag{
+    display:inline-block; font-size:11px; color:var(--gold); text-transform:uppercase; letter-spacing:0.14em;
+    margin-bottom:10px; font-weight:600;
+  }
+  .doc .part-title{ font-size:clamp(26px,3.4vw,34px); margin-bottom:8px; }
+  .doc .part-sub{ color:var(--muted); font-size:14.5px; margin-bottom:40px; }
+
+  footer{ padding:48px 0 40px; border-top:1px solid var(--line); }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+  .foot-links{ display:flex; gap:24px; flex-wrap:wrap; }
+  .foot-links a{ font-size:13px; color:var(--muted); text-decoration:none; }
+  .foot-links a:hover{ color:var(--ink); }
+  .copyright{ font-size:12px; color:var(--muted-2); margin-top:24px; }
+
+  @media (max-width: 880px){
+    .doc-layout{ grid-template-columns:1fr; }
+    .toc{ position:static; display:flex; flex-wrap:wrap; gap:4px 18px; padding-bottom:24px; border-bottom:1px solid var(--line); margin-bottom:24px; }
+    .toc-label{ display:none; }
+    .toc .toc-group{ display:none; }
+    .toc a{ padding:4px 0; border-left:none; }
+    .nav-links{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap row">
+    <a href="index.html" class="brand">
+      <div class="hex"><span>V</span></div>
+      <div class="brand-name">VALLENT <b>EXS</b></div>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="#">Support</a>
+    </div>
+    <a href="#" class="btn btn-primary">Add to Discord</a>
+  </div>
+</nav>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="eyebrow">Legal</div>
+    <h1>PRIVACY POLICY<br>&amp; TERMS OF SERVICE</h1>
+    <p>How VALLENT EXS handles your data, and the terms that apply when you use the bot or purchase Premium.</p>
+    <div class="updated mono">LAST UPDATED — AUGUST 2026</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="disclaimer">
+    <b>Draft notice:</b> this document was put together to accurately reflect what VALLENT EXS actually does, but it is not legal advice and hasn't been reviewed by a lawyer. Review it — and ideally have it checked by one, especially since real payments are involved — before treating it as final.
+  </div>
+</div>
+
+<div class="wrap doc-layout">
+  <div class="toc">
+    <div class="toc-label">On this page</div>
+    <div class="toc-group">Privacy Policy</div>
+    <a href="#data-we-collect">Data We Collect</a>
+    <a href="#how-we-use-it">How We Use It</a>
+    <a href="#third-parties">Third-Party Services</a>
+    <a href="#data-retention">Retention &amp; Deletion</a>
+    <a href="#your-rights">Your Rights</a>
+    <a href="#children">Children's Privacy</a>
+    <a href="#security">Security</a>
+    <div class="toc-group">Terms of Service</div>
+    <a href="#acceptance">Acceptance of Terms</a>
+    <a href="#using-the-bot">Using the Bot</a>
+    <a href="#premium-purchases">Premium Purchases</a>
+    <a href="#acceptable-use">Acceptable Use</a>
+    <a href="#termination">Suspension &amp; Termination</a>
+    <a href="#disclaimer">Disclaimer &amp; Liability</a>
+    <a href="#changes">Changes to These Terms</a>
+    <a href="#contact">Contact</a>
+  </div>
+
+  <div class="doc">
+
+    <div class="part-tag">// Part 01</div>
+    <h1 class="part-title">Privacy Policy</h1>
+    <p class="part-sub">Applies to anyone in a Discord server that uses VALLENT EXS, and anyone who interacts with the bot directly.</p>
+
+    <section id="data-we-collect">
+      <h2><span class="num">01</span> Data We Collect</h2>
+      <p>VALLENT EXS collects only what it needs to run its features. Specifically:</p>
+      <h3>Identifiers</h3>
+      <ul>
+        <li>Your <b>Discord user ID</b>, and the <b>server (guild) IDs</b> and <b>channel IDs</b> the bot operates in.</li>
+        <li>Your <b>Discord username and display name</b>, and your <b>avatar</b> — the avatar image itself is fetched from Discord to render cards and is not stored after rendering.</li>
+      </ul>
+      <h3>Activity & progression data</h3>
+      <ul>
+        <li>XP, level, and message-count totals used for the leveling system.</li>
+        <li>Badges, hierarchy role, and Premium status.</li>
+        <li>Customization you set yourself — custom card gradients, custom background image URLs, custom badge names/emoji.</li>
+        <li>AFK status and the reason text you provide when setting it.</li>
+        <li>Voting records (timestamps and streaks) if you vote for the bot on top.gg.</li>
+      </ul>
+      <h3>Moderation & server configuration data</h3>
+      <ul>
+        <li>Server-level settings staff configure (moderation rules, ticket setup, giveaway data, verification settings, embed/component drafts, and similar).</li>
+        <li>Moderation actions taken through the bot (warns, mutes, bans) and the reason provided, where that feature is used.</li>
+      </ul>
+      <p>VALLENT EXS does <b>not</b> read, log, or store the general content of your messages. Message content is only processed transiently where a feature requires it (for example, checking a message against an auto-moderation filter) and is not retained afterward unless a staff member explicitly uses a feature that saves it (like a ticket transcript).</p>
+    </section>
+
+    <section id="how-we-use-it">
+      <h2><span class="num">02</span> How We Use It</h2>
+      <p>Data is used strictly to operate the bot's features: leveling and rank cards, moderation and anti-nuke protection, tickets, giveaways, verification, badges, and Premium perks. We do not sell your data, and we do not use it for advertising.</p>
+    </section>
+
+    <section id="third-parties">
+      <h2><span class="num">03</span> Third-Party Services</h2>
+      <p>VALLENT EXS relies on a small number of external services to function:</p>
+      <ul>
+        <li><b>Discord</b> — the platform the bot runs on. Discord's own <a href="https://discord.com/privacy" target="_blank" style="color:var(--gold)">Privacy Policy</a> applies to your use of Discord itself.</li>
+        <li><b>top.gg</b> — used only to receive vote confirmations if you vote for the bot there.</li>
+        <li><b>Hosting provider</b> — the infrastructure that runs the bot and stores its configuration data.</li>
+      </ul>
+      <p>We don't share your data with any other third party beyond what's needed to operate these integrations.</p>
+    </section>
+
+    <section id="data-retention">
+      <h2><span class="num">04</span> Retention &amp; Deletion</h2>
+      <p>Your data is kept for as long as it's useful to the features above — generally until you or a server admin removes it, or the server removes the bot. If you'd like your data deleted, contact us (see <a href="#contact" style="color:var(--gold)">Contact</a>) and we'll remove what we can that isn't needed for a server's own moderation records.</p>
+    </section>
+
+    <section id="your-rights">
+      <h2><span class="num">05</span> Your Rights</h2>
+      <p>Depending on where you live, you may have rights to access, correct, or delete your data, or to object to how it's processed. Reach out through the support server and we'll do our best to help, within what Discord's platform and the bot's design allow.</p>
+    </section>
+
+    <section id="children">
+      <h2><span class="num">06</span> Children's Privacy</h2>
+      <p>VALLENT EXS is intended for use in line with Discord's own Terms of Service, which require users to be at least 13 years old (or the minimum age in your region). We don't knowingly collect data from anyone below that age.</p>
+    </section>
+
+    <section id="security">
+      <h2><span class="num">07</span> Security</h2>
+      <p>We take reasonable steps to protect stored data, but no system is perfectly secure. We can't guarantee absolute security and encourage you to use Discord's own account security features (like two-factor authentication).</p>
+    </section>
+
+    <hr class="divider">
+
+    <div class="part-tag">// Part 02</div>
+    <h1 class="part-title">Terms of Service</h1>
+    <p class="part-sub">By adding VALLENT EXS to a server or using its commands, you agree to these terms.</p>
+
+    <section id="acceptance">
+      <h2><span class="num">08</span> Acceptance of Terms</h2>
+      <p>Using VALLENT EXS — inviting it to a server, running its commands, or purchasing Premium — means you agree to these Terms and the Privacy Policy above. If you don't agree, please don't use the bot.</p>
+    </section>
+
+    <section id="using-the-bot">
+      <h2><span class="num">09</span> Using the Bot</h2>
+      <p>VALLENT EXS is provided as-is, free to add and use, with optional paid Premium features. We aim for high uptime but don't guarantee the bot will be available at all times — features may change, be added, or be removed as the bot is developed further.</p>
+    </section>
+
+    <section id="premium-purchases">
+      <h2><span class="num">10</span> Premium Purchases</h2>
+      <p>Premium, No-Prefix, and Custom Badges are sold as <b>one-time payments for a fixed duration</b> (or permanently, for Lifetime tiers) — not recurring subscriptions. Purchases are currently arranged manually through the support server.</p>
+      <p><b>Refunds:</b> because these are digital perks activated immediately upon purchase, purchases are generally non-refundable once granted. Exceptions may be made at the owner's discretion — for example, if a purchase was made in error or a paid feature doesn't work as intended. Reach out via the support server to request one.</p>
+      <p>Losing access to the server VALLENT EXS is in, or being removed from that server, does not entitle you to a refund — your Premium/No-Prefix/Badge status is tied to your Discord account, not to any one server.</p>
+    </section>
+
+    <section id="acceptable-use">
+      <h2><span class="num">11</span> Acceptable Use</h2>
+      <p>You agree not to:</p>
+      <ul>
+        <li>Use VALLENT EXS to violate Discord's Terms of Service or Community Guidelines.</li>
+        <li>Attempt to exploit, reverse-engineer, or abuse bugs in the bot for unintended advantage (including stacking or duplicating Premium perks).</li>
+        <li>Use the bot to harass, abuse, or harm other users.</li>
+        <li>Resell or redistribute Premium access you've purchased to another Discord account.</li>
+      </ul>
+    </section>
+
+    <section id="termination">
+      <h2><span class="num">12</span> Suspension &amp; Termination</h2>
+      <p>We may suspend or revoke your access to VALLENT EXS's features — including paid Premium perks — if you violate these Terms, without a refund, at our discretion. A server owner can remove the bot from their server at any time.</p>
+    </section>
+
+    <section id="disclaimer">
+      <h2><span class="num">13</span> Disclaimer &amp; Liability</h2>
+      <p>VALLENT EXS is provided "as is," without warranties of any kind. We're not liable for any indirect, incidental, or consequential damages arising from your use of the bot, including moderation actions taken by the bot or by your server's staff using it.</p>
+    </section>
+
+    <section id="changes">
+      <h2><span class="num">14</span> Changes to These Terms</h2>
+      <p>We may update this Privacy Policy and these Terms as the bot changes. Continued use of VALLENT EXS after an update means you accept the revised terms. Significant changes will be announced in the support server.</p>
+    </section>
+
+    <section id="contact">
+      <h2><span class="num">15</span> Contact</h2>
+      <p>Questions about this Privacy Policy, these Terms, a purchase, or a data request? Reach out in the VALLENT EXS support server.</p>
+      <a href="#" class="btn btn-primary" style="margin-top:8px;">Join the Support Server</a>
+    </section>
+
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="brand">
+        <div class="hex" style="width:32px;"><span style="font-size:15px;">V</span></div>
+        <div class="brand-name">VALLENT <b>EXS</b></div>
+      </div>
+      <div class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="#">Support Server</a>
+        <a href="#">Commands</a>
+      </div>
+    </div>
+    <div class="copyright">© 2026 VALLENT EXS. Not affiliated with Discord Inc.</div>
+  </div>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('.doc section[id]');
+  const links = document.querySelectorAll('.toc a');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      const link = document.querySelector(`.toc a[href="#${en.target.id}"]`);
+      if (!link) return;
+      if (en.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => io.observe(s));
+</script>
+
+</body>
+</html>

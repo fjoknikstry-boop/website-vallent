@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VALLENT EXS — Hyper-Moderation Discord Bot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@500;700;900&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0a0605;
+    --surface:#130b0c;
+    --surface-2:#1c1112;
+    --line: rgba(245,240,236,0.09);
+    --crimson:#a80f2c;
+    --crimson-deep:#3d0010;
+    --crimson-glow: rgba(168,15,44,0.35);
+    --gold:#f5a623;
+    --gold-deep:#5c3c06;
+    --gold-glow: rgba(245,166,35,0.30);
+    --ink:#f5f0ec;
+    --muted:#a3908d;
+    --muted-2:#6e5c5a;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--void);
+    color:var(--ink);
+    font-family:'Outfit', sans-serif;
+    font-weight:400;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* ---------- ambient texture ---------- */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      radial-gradient(circle at 15% 8%, var(--crimson-glow), transparent 32%),
+      radial-gradient(circle at 88% 82%, var(--gold-glow), transparent 38%);
+    opacity:0.35;
+    pointer-events:none;
+    z-index:0;
+  }
+  body::after{
+    content:"";
+    position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+    pointer-events:none;
+    z-index:1;
+    mix-blend-mode:overlay;
+  }
+
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; position:relative; z-index:2; }
+
+  h1,h2,h3,.display{
+    font-family:'Big Shoulders', sans-serif;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    line-height:0.92;
+  }
+  .mono{ font-family:'JetBrains Mono', monospace; letter-spacing:0.08em; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  /* ---------- hex badge ---------- */
+  .hex{
+    --s: 40px;
+    width:var(--s); height:calc(var(--s) * 1.02);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+
+  /* ================= NAV ================= */
+  nav{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter: blur(14px);
+    background: rgba(10,6,5,0.72);
+    border-bottom:1px solid var(--line);
+  }
+  nav .row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 0;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand .hex{ background:linear-gradient(155deg, var(--crimson), var(--crimson-deep)); box-shadow:0 0 22px var(--crimson-glow); }
+  .brand .hex span{ font-family:'Big Shoulders',sans-serif; font-weight:900; font-size:20px; color:var(--ink); }
+  .brand-name{ font-family:'Big Shoulders',sans-serif; font-weight:700; font-size:19px; letter-spacing:0.03em; }
+  .brand-name b{ color:var(--gold); font-weight:900; }
+
+  .nav-links{ display:flex; align-items:center; gap:36px; }
+  .nav-links a{
+    font-size:13.5px; font-weight:500; color:var(--muted);
+    text-transform:uppercase; letter-spacing:0.09em;
+    transition:color .2s;
+  }
+  .nav-links a:hover{ color:var(--ink); }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:12px 24px;
+    font-family:'Outfit',sans-serif; font-weight:600; font-size:14px;
+    letter-spacing:0.02em;
+    border-radius:3px;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    cursor:pointer; border:none;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg, var(--crimson), #5c0a1a);
+    color:#fff;
+    box-shadow:0 8px 24px -8px var(--crimson-glow);
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 12px 30px -6px var(--crimson-glow); }
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--line);
+  }
+  .btn-ghost:hover{ border-color: var(--muted); background:rgba(255,255,255,0.03); }
+  .btn-sm{ padding:9px 16px; font-size:12.5px; }
+
+  /* ================= HERO ================= */
+  .hero{ position:relative; padding:96px 0 80px; overflow:hidden; }
+  .hero-grid{
+    display:grid; grid-template-columns:1.05fr 0.95fr;
+    gap:64px; align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-size:12px; color:var(--gold);
+    text-transform:uppercase; letter-spacing:0.18em;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{ content:""; width:26px; height:1px; background:var(--gold); }
+
+  .hero h1{ font-size:clamp(44px, 5.6vw, 74px); margin-bottom:22px; }
+  .hero h1 .accent{
+    background:linear-gradient(120deg, var(--crimson) 10%, var(--gold) 90%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p.lead{
+    font-size:17px; color:var(--muted); max-width:480px; line-height:1.65;
+    margin-bottom:36px;
+  }
+  .hero-ctas{ display:flex; gap:14px; margin-bottom:44px; flex-wrap:wrap; }
+
+  .trust-strip{ display:flex; gap:34px; flex-wrap:wrap; }
+  .trust-item{ display:flex; flex-direction:column; gap:2px; }
+  .trust-item .num{ font-family:'Big Shoulders',sans-serif; font-weight:900; font-size:26px; color:var(--ink); }
+  .trust-item .lbl{ font-size:11.5px; color:var(--muted-2); text-transform:uppercase; letter-spacing:0.1em; }
+
+  /* ---------- rank card mockup ---------- */
+  .mock-stage{ position:relative; display:flex; justify-content:center; }
+  .id-card{
+    width:100%; max-width:440px;
+    aspect-ratio: 934 / 300;
+    position:relative;
+    border-radius:14px;
+    background:linear-gradient(160deg, #170d0e 0%, #2b0a0f 60%, #170d0e 100%);
+    border:1px solid rgba(245,166,35,0.28);
+    box-shadow: 0 30px 70px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.02) inset;
+    overflow:hidden;
+    transform: perspective(1200px) rotateY(-8deg) rotateX(3deg);
+    animation: floatCard 7s ease-in-out infinite;
+  }
+  @keyframes floatCard{
+    0%,100%{ transform: perspective(1200px) rotateY(-8deg) rotateX(3deg) translateY(0); }
+    50%{ transform: perspective(1200px) rotateY(-6deg) rotateX(2deg) translateY(-10px); }
+  }
+  .id-card::before{
+    content:"VX";
+    position:absolute; right:-6%; top:-22%;
+    font-family:'Big Shoulders',sans-serif; font-weight:900;
+    font-size:230px; color:rgba(255,255,255,0.035);
+    line-height:1; pointer-events:none;
+  }
+  .card-corner{ position:absolute; width:22px; height:22px; border:2px solid var(--gold); opacity:0.85; }
+  .card-corner.tl{ top:10px; left:10px; border-right:none; border-bottom:none; }
+  .card-corner.br{ bottom:10px; right:10px; border-left:none; border-top:none; }
+
+  .card-body{ position:absolute; inset:0; display:flex; align-items:center; padding:6% 7%; gap:5%; }
+  .card-avatar{
+    flex-shrink:0;
+    width:26%; aspect-ratio:1;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background:
+      linear-gradient(145deg, var(--surface-2), #3a1116) padding-box,
+      linear-gradient(145deg, var(--gold), var(--crimson)) border-box;
+    border: 3px solid transparent;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 34px -6px var(--gold-glow);
+  }
+  .card-avatar-inner{
+    width:80%; height:80%;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background:linear-gradient(160deg,#4a2a1e,#7a3b1e);
+  }
+  .card-info{ flex:1; min-width:0; }
+  .card-name{ font-family:'Big Shoulders',sans-serif; font-weight:900; font-size:clamp(16px,3.4vw,26px); color:#fff; letter-spacing:0.01em; }
+  .card-tag{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:clamp(8px,1.4vw,11px); color:var(--gold);
+    text-transform:uppercase; letter-spacing:0.1em; font-weight:600;
+    margin:5px 0 10px;
+  }
+  .card-tag .dot{ width:6px; height:6px; background:var(--gold); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+  .card-bar{ display:flex; gap:2.5px; margin-top:8px; }
+  .card-bar i{ flex:1; height:9px; background:rgba(255,255,255,0.08); border-radius:1px; }
+  .card-bar i.on{ background:linear-gradient(90deg, var(--crimson), var(--gold)); }
+  .card-sub{ font-size:clamp(7px,1.2vw,10px); color:var(--muted); margin-top:8px; letter-spacing:0.04em; }
+
+  /* ================= SECTION SHARED ================= */
+  section{ position:relative; padding:100px 0; z-index:2; }
+  .section-head{ max-width:640px; margin-bottom:56px; }
+  .section-tag{
+    display:flex; align-items:center; gap:10px;
+    font-size:12px; color:var(--crimson);
+    text-transform:uppercase; letter-spacing:0.16em; font-weight:600;
+    margin-bottom:16px;
+  }
+  .section-tag::before{ content:""; width:22px; height:1px; background:var(--crimson); }
+  .section-head h2{ font-size:clamp(30px,4vw,46px); margin-bottom:14px; }
+  .section-head p{ color:var(--muted); font-size:15.5px; line-height:1.7; }
+
+  /* ================= MODULES GRID ================= */
+  .modules{ display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  .module{
+    background:var(--void);
+    padding:36px 30px;
+    position:relative;
+    transition: background .25s ease;
+  }
+  .module:hover{ background:var(--surface); }
+  .module-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:26px; }
+  .module .hex{ background:var(--surface-2); border:1px solid var(--line); }
+  .module .hex svg{ width:18px; height:18px; }
+  .module-code{ font-size:11px; color:var(--muted-2); }
+  .module h3{ font-family:'Outfit',sans-serif; text-transform:none; font-weight:600; font-size:18px; letter-spacing:0; margin-bottom:10px; }
+  .module p{ font-size:13.5px; color:var(--muted); line-height:1.6; }
+  .module.accent-gold h3{ color:var(--gold); }
+
+  /* ================= PREMIUM ================= */
+  .premium-wrap{
+    border:1px solid rgba(245,166,35,0.22);
+    border-radius:16px;
+    padding:64px;
+    position:relative;
+    overflow:hidden;
+    background:radial-gradient(circle at 85% 20%, rgba(245,166,35,0.08), transparent 55%);
+  }
+  .premium-grid{ display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+  .premium-list{ display:flex; flex-direction:column; gap:20px; margin-top:32px; }
+  .premium-item{ display:flex; gap:14px; align-items:flex-start; }
+  .premium-item .mark{
+    flex-shrink:0; width:20px; height:20px; margin-top:2px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background:linear-gradient(135deg, var(--gold), var(--crimson));
+    display:flex; align-items:center; justify-content:center;
+  }
+  .premium-item .mark::after{ content:"✓"; font-size:11px; color:#100608; font-weight:900; }
+  .premium-item div{ font-size:14.5px; color:var(--ink); line-height:1.55; }
+  .premium-item div b{ color:var(--gold); font-weight:600; }
+
+  .swatch-row{ display:flex; gap:10px; margin-top:36px; }
+  .swatch{ width:34px; height:34px; border-radius:50%; border:2px solid var(--void); box-shadow:0 0 0 1px var(--line); }
+
+  .gradient-preview{
+    height:340px; border-radius:14px; position:relative; overflow:hidden;
+    background:linear-gradient(160deg, #170d0e, #2b0a0f);
+    border:1px solid var(--line);
+  }
+  .gradient-preview .g1{ position:absolute; inset:0; background:conic-gradient(from 200deg at 30% 30%, var(--crimson), var(--gold), #7c3aed, var(--crimson)); opacity:0.5; filter:blur(50px); animation:spin 14s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .gradient-preview .frame{ position:absolute; inset:14px; border-radius:10px; border:1px solid rgba(255,255,255,0.12); backdrop-filter: blur(2px); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:10px; }
+  .gradient-preview .tag{ font-family:'Big Shoulders',sans-serif; font-weight:900; font-size:15px; letter-spacing:0.06em; background:linear-gradient(120deg,var(--gold),var(--crimson)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .gradient-preview .cmd{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); background:rgba(0,0,0,0.4); padding:8px 14px; border-radius:5px; border:1px solid var(--line); }
+
+  /* ================= CTA BAND ================= */
+  .cta-band{
+    text-align:center; padding:90px 0;
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .cta-band h2{ font-size:clamp(30px,4.6vw,52px); margin-bottom:18px; }
+  .cta-band p{ color:var(--muted); font-size:15.5px; margin-bottom:34px; }
+  .cta-band .hero-ctas{ justify-content:center; }
+
+  /* ================= FOOTER ================= */
+  footer{ padding:56px 0 40px; }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px; }
+  .foot-links{ display:flex; gap:28px; flex-wrap:wrap; }
+  .foot-links a{ font-size:13px; color:var(--muted); }
+  .foot-links a:hover{ color:var(--ink); }
+  .copyright{ font-size:12px; color:var(--muted-2); margin-top:28px; }
+
+  @media (max-width: 880px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .mock-stage{ order:-1; margin-bottom:20px; }
+    .id-card{ max-width:380px; transform:none; animation:none; }
+    .modules{ grid-template-columns:1fr 1fr; }
+    .premium-grid{ grid-template-columns:1fr; }
+    .premium-wrap{ padding:36px 24px; }
+    .nav-links{ display:none; }
+  }
+  @media (max-width: 560px){
+    .modules{ grid-template-columns:1fr; }
+    .wrap{ padding:0 20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .id-card{ animation:none; }
+    .gradient-preview .g1{ animation:none; }
+  }
+
+  [data-reveal]{ opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease; }
+  [data-reveal].in{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap row">
+    <div class="brand">
+      <div class="hex"><span>V</span></div>
+      <div class="brand-name">VALLENT <b>EXS</b></div>
+    </div>
+    <div class="nav-links">
+      <a href="#systems">Systems</a>
+      <a href="#premium">Premium</a>
+      <a href="#support">Support</a>
+    </div>
+    <a href="#invite" class="btn btn-primary btn-sm">Add to Discord</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Hyper-Moderation Discord Bot</div>
+      <h1>PROTECT THE SERVER.<br><span class="accent">REWARD</span> THE MEMBERS.</h1>
+      <p class="lead">VALLENT EXS locks down raids in real time, runs your leveling economy with rank cards worth showing off, and hands your staff a full moderation & ticket toolkit — all from one bot.</p>
+      <div class="hero-ctas">
+        <a href="#invite" class="btn btn-primary">Add to Discord</a>
+        <a href="#support" class="btn btn-ghost">Join Support Server</a>
+      </div>
+      <div class="trust-strip">
+        <div class="trust-item"><span class="num">25+</span><span class="lbl">Servers Protected</span></div>
+        <div class="trust-item"><span class="num">6</span><span class="lbl">Core Systems</span></div>
+        <div class="trust-item"><span class="num">24/7</span><span class="lbl">Anti-Nuke Watch</span></div>
+      </div>
+    </div>
+
+    <div class="mock-stage">
+      <div class="id-card">
+        <div class="card-corner tl"></div>
+        <div class="card-corner br"></div>
+        <div class="card-body">
+          <div class="card-avatar"><div class="card-avatar-inner"></div></div>
+          <div class="card-info">
+            <div class="card-name">NIKOLIESAMPHINK</div>
+            <div class="card-tag"><span class="dot"></span>Premium Member</div>
+            <div class="card-bar">
+              <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+              <i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i>
+              <i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <div class="card-sub">LEVEL 42 · RANK #1 · 512,000 XP</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="systems">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="section-tag">// Systems</div>
+      <h2>Six systems.<br>One bot.</h2>
+      <p>Every module is built to run on its own — turn on what your server needs, ignore the rest.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="modules" data-reveal>
+      <div class="module">
+        <div class="module-top">
+          <div class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="#a80f2c" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg></div>
+          <div class="module-code mono">MOD // 01</div>
+        </div>
+        <h3>Moderation</h3>
+        <p>Warns, mutes, bans, auto-mod filters, and a full action log — everything your staff needs, kept in one place.</p>
+      </div>
+      <div class="module">
+        <div class="module-top">
+          <div class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="#a80f2c" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          <div class="module-code mono">SEC // 02</div>
+        </div>
+        <h3>Anti-Nuke</h3>
+        <p>Reads the audit log in real time. Mass channel deletes, mass bans, and role escalation get shut down before the damage lands.</p>
+      </div>
+      <div class="module">
+        <div class="module-top">
+          <div class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="1.6"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
+          <div class="module-code mono">LVL // 03</div>
+        </div>
+        <h3 class="accent-gold">Leveling & Rank Cards</h3>
+        <p>XP, levels, and rendered rank cards members actually want to flex — with a custom ID card system for full profiles.</p>
+      </div>
+      <div class="module">
+        <div class="module-top">
+          <div class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="#a80f2c" stroke-width="1.6"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16"/></svg></div>
+          <div class="module-code mono">TIX // 04</div>
+        </div>
+        <h3>Ticket System</h3>
+        <p>Multi-category panels, dedicated staff roles per category, and full transcripts — support tickets that scale with your server.</p>
+      </div>
+      <div class="module">
+        <div class="module-top">
+          <div class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="#a80f2c" stroke-width="1.6"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7c-2 0-3.5-1.5-3.5-3.5S10 0 12 3c0-3 1.5-3.5 3.5-3.5S17 5 15 7z"/></svg></div>
+          <div class="module-code mono">GWY // 05</div>
+        </div>
+        <h3>Giveaways</h3>
+        <p>Button-based entry with a live participant list — no reactions to fumble, no ambiguity about who's actually in.</p>
+      </div>
+      <div class="module accent-gold">
+        <div class="module-top">
+          <div class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="1.6"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2L12 16.4 5.7 21l2.3-7.2-6-4.6h7.6z"/></svg></div>
+          <div class="module-code mono">PRM // 06</div>
+        </div>
+        <h3 class="accent-gold">Premium</h3>
+        <p>Custom gradients, custom backgrounds, and a permanent XP edge — for the members who want their profile to look like theirs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="premium">
+  <div class="wrap">
+    <div class="premium-wrap" data-reveal>
+      <div class="premium-grid">
+        <div>
+          <div class="section-tag" style="color:var(--gold)">// Premium</div>
+          <h2 style="font-size:clamp(28px,3.6vw,42px)">Make it<br>unmistakably <span style="color:var(--gold)">yours.</span></h2>
+          <div class="premium-list">
+            <div class="premium-item"><div class="mark"></div><div>Set a <b>custom 2 or 3-color gradient</b> across your rank card, level-up card, and ID card — independently, if you want them different.</div></div>
+            <div class="premium-item"><div class="mark"></div><div>Upload a <b>custom background image</b> instead of the default theme, cropped to fit each card automatically.</div></div>
+            <div class="premium-item"><div class="mark"></div><div>Carry a <b>Premium badge</b> on your profile and rank card in every server VALLENT EXS is in — plus the gold theme by default, before you even set a custom one.</div></div>
+            <div class="premium-item"><div class="mark"></div><div>Skip the prefix entirely with <b>no-prefix commands</b> — talk to VALLENT EXS like it's just there, no typing a symbol first.</div></div>
+          </div>
+          <div class="swatch-row">
+            <div class="swatch" style="background:#a80f2c"></div>
+            <div class="swatch" style="background:#f5a623"></div>
+            <div class="swatch" style="background:#7c3aed"></div>
+            <div class="swatch" style="background:#20dcd2"></div>
+            <div class="swatch" style="background:#ff2878"></div>
+          </div>
+        </div>
+        <div class="gradient-preview">
+          <div class="g1"></div>
+          <div class="frame">
+            <div class="tag">rankcolor #a672ff #20dcd2</div>
+            <div class="cmd">→ applied to your card, instantly</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band" id="invite">
+  <div class="wrap">
+    <div data-reveal>
+      <h2>Ready to arm<br>your server?</h2>
+      <p>Free to run. Free to try. Premium when you want more.</p>
+      <div class="hero-ctas">
+        <a href="#" class="btn btn-primary">Add to Discord</a>
+        <a href="#support" class="btn btn-ghost">Join Support Server</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer id="support">
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="brand">
+        <div class="hex" style="width:32px;"><span style="font-size:15px;">V</span></div>
+        <div class="brand-name">VALLENT <b>EXS</b></div>
+      </div>
+      <div class="foot-links">
+        <a href="#invite">Add to Discord</a>
+        <a href="#">Support Server</a>
+        <a href="#">Commands</a>
+        <a href="legal.html#data-we-collect">Privacy Policy</a>
+        <a href="legal.html#acceptance">Terms of Service</a>
+      </div>
+    </div>
+    <div class="copyright">© 2026 VALLENT EXS. Not affiliated with Discord Inc.</div>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
