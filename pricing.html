@@ -23,6 +23,12 @@
     --ink:#f5f0ec;
     --muted:#a3908d;
     --muted-2:#6e5c5a;
+    --surface-3:#241618;
+    --line-2: rgba(245,240,236,0.16);
+    --shadow-lg: 0 26px 64px -22px rgba(0,0,0,0.68);
+    --shadow-sm: 0 10px 26px -14px rgba(0,0,0,0.55);
+    --radius-lg: 16px;
+    --radius-md: 10px;
   }
 
   *{ margin:0; padding:0; box-sizing:border-box; }
@@ -138,16 +144,18 @@
   .tier{
     background:var(--surface);
     border:1px solid var(--line);
-    border-radius:12px;
+    border-radius:var(--radius-lg);
     padding:28px 24px;
     display:flex; flex-direction:column;
     position:relative;
-    transition: transform .2s ease, border-color .2s ease;
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    box-shadow:var(--shadow-sm);
   }
-  .tier:hover{ transform:translateY(-4px); border-color:rgba(245,240,236,0.18); }
+  .tier:hover{ transform:translateY(-6px); border-color:var(--line-2); box-shadow:var(--shadow-lg); }
   .tier.featured{
     border-color: rgba(245,166,35,0.4);
     background:linear-gradient(160deg, var(--surface) 0%, rgba(245,166,35,0.06) 100%);
+    box-shadow:0 26px 64px -22px var(--gold-glow);
   }
   .tier-badge{
     position:absolute; top:-11px; left:24px;
@@ -236,6 +244,45 @@
 
   .brand-logo{ width:40px; height:40px; border-radius:50%; object-fit:cover; flex-shrink:0; filter:drop-shadow(0 0 10px var(--crimson-glow)); }
   .brand-logo.sm{ width:32px; height:32px; }
+
+  /* ================= PROFESSIONAL POLISH LAYER ================= */
+  ::selection{ background:var(--crimson); color:#fff; }
+  ::-webkit-scrollbar{ width:10px; height:10px; }
+  ::-webkit-scrollbar-track{ background:var(--void); }
+  ::-webkit-scrollbar-thumb{ background:var(--surface-3); border-radius:8px; border:2px solid var(--void); }
+  ::-webkit-scrollbar-thumb:hover{ background:var(--muted-2); }
+  html{ scrollbar-color: var(--surface-3) var(--void); }
+
+  nav{ box-shadow:0 1px 0 var(--line), 0 16px 40px -26px rgba(0,0,0,0.7); }
+  nav::after{ content:""; position:absolute; left:0; right:0; bottom:-1px; height:1px;
+    background:linear-gradient(90deg, transparent, var(--crimson-glow) 35%, var(--gold-glow) 65%, transparent); opacity:.6; }
+
+  .btn{ position:relative; overflow:hidden; isolation:isolate; }
+  .btn::before{ content:""; position:absolute; inset:0;
+    background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.22) 48%, transparent 66%);
+    transform:translateX(-130%); transition:transform .55s ease; z-index:1; pointer-events:none; }
+  .btn:hover::before{ transform:translateX(130%); }
+  .btn-primary{ background:linear-gradient(135deg, var(--crimson) 0%, #7a0d22 55%, #4a0714 100%);
+    box-shadow:0 10px 28px -12px var(--crimson-glow), inset 0 1px 0 rgba(255,255,255,0.08); }
+  .btn-primary:hover{ box-shadow:0 18px 38px -10px var(--crimson-glow), inset 0 1px 0 rgba(255,255,255,0.12); }
+  .btn-ghost{ backdrop-filter:blur(6px); }
+  .btn-ghost:hover{ box-shadow:0 8px 22px -14px rgba(0,0,0,.6); }
+
+  .hex{ position:relative; }
+  .hex::after{ content:""; position:absolute; inset:0; clip-path:inherit;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14), inset 0 -6px 10px rgba(0,0,0,0.25); pointer-events:none; }
+
+  footer{ position:relative; }
+  footer::before{ content:""; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, var(--line-2), transparent); }
+  .copyright{ opacity:.62; }
+
+  a:focus-visible, button:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible{
+    outline:2px solid var(--gold); outline-offset:2px; border-radius:4px;
+  }
+
+  img{ image-rendering:-webkit-optimize-contrast; }
+
 </style>
 </head>
 <body>
