@@ -63,6 +63,16 @@
     mix-blend-mode:overlay;
   }
 
+  /* ---------- drifting ambient orbs ---------- */
+  .orb{ position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; z-index:0; opacity:0.5; }
+  .orb-1{ width:420px; height:420px; background:radial-gradient(circle, var(--crimson-glow), transparent 70%); top:-140px; left:-100px; animation:driftA 18s ease-in-out infinite; }
+  .orb-2{ width:340px; height:340px; background:radial-gradient(circle, var(--gold-glow), transparent 70%); bottom:-120px; right:-80px; animation:driftB 22s ease-in-out infinite; }
+  .orb-3{ width:260px; height:260px; background:radial-gradient(circle, rgba(124,58,237,0.22), transparent 70%); top:40%; left:56%; animation:driftC 26s ease-in-out infinite; }
+  @keyframes driftA{ 0%,100%{ transform:translate(0,0) scale(1); } 50%{ transform:translate(60px,40px) scale(1.15); } }
+  @keyframes driftB{ 0%,100%{ transform:translate(0,0) scale(1); } 50%{ transform:translate(-50px,-30px) scale(1.1); } }
+  @keyframes driftC{ 0%,100%{ transform:translate(0,0) scale(0.9); } 50%{ transform:translate(-40px,50px) scale(1.05); } }
+  @media (prefers-reduced-motion: reduce){ .orb{ animation:none; } }
+
   .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; position:relative; z-index:2; }
 
   h1,h2,h3,.display{
@@ -136,6 +146,11 @@
 
   /* ================= HERO ================= */
   .hero{ position:relative; padding:96px 0 80px; overflow:hidden; }
+  .hero::before{
+    content:""; position:absolute; inset:0; pointer-events:none; z-index:0;
+    background:radial-gradient(360px 360px at var(--mx,50%) var(--my,30%), rgba(245,166,35,0.07), transparent 70%);
+    transition:background-position .1s linear;
+  }
   .hero-grid{
     display:grid; grid-template-columns:1.05fr 0.95fr;
     gap:64px; align-items:center;
@@ -146,13 +161,21 @@
     text-transform:uppercase; letter-spacing:0.18em;
     margin-bottom:22px;
   }
-  .eyebrow::before{ content:""; width:26px; height:1px; background:var(--gold); }
+  .eyebrow .pulse-dot{ position:relative; width:7px; height:7px; border-radius:50%; background:var(--gold); flex-shrink:0; }
+  .eyebrow .pulse-dot::after{ content:""; position:absolute; inset:-5px; border-radius:50%; border:1px solid var(--gold); animation:pulseRing 2.2s ease-out infinite; }
+  @keyframes pulseRing{ 0%{ transform:scale(0.6); opacity:0.9; } 100%{ transform:scale(2.2); opacity:0; } }
 
   .hero h1{ font-size:clamp(44px, 5.6vw, 74px); margin-bottom:22px; }
   .hero h1 .accent{
-    background:linear-gradient(120deg, var(--crimson) 10%, var(--gold) 90%);
+    background:linear-gradient(120deg, var(--crimson) 10%, var(--gold) 50%, var(--crimson) 90%);
+    background-size:200% auto;
     -webkit-background-clip:text; background-clip:text; color:transparent;
+    display:inline-block; animation:shimmerText 5s linear infinite;
   }
+  @keyframes shimmerText{ to{ background-position:200% center; } }
+  #rotWord{ position:relative; display:inline-block; transition:opacity .3s ease, transform .3s ease; }
+  #rotWord.swap{ opacity:0; transform:translateY(6px); }
+  @media (prefers-reduced-motion: reduce){ .hero h1 .accent{ animation:none; } #rotWord{ transition:none; } }
   .hero p.lead{
     font-size:17px; color:var(--muted); max-width:480px; line-height:1.65;
     margin-bottom:36px;
@@ -189,6 +212,14 @@
     font-size:230px; color:rgba(255,255,255,0.035);
     line-height:1; pointer-events:none;
   }
+  .id-card::after{
+    content:""; position:absolute; top:0; bottom:0; width:40%;
+    background:linear-gradient(100deg, transparent, rgba(255,255,255,0.09), transparent);
+    transform:translateX(-260%) skewX(-18deg);
+    animation:cardShine 6s ease-in-out infinite; pointer-events:none;
+  }
+  @keyframes cardShine{ 0%,60%,100%{ transform:translateX(-260%) skewX(-18deg); } 80%{ transform:translateX(260%) skewX(-18deg); } }
+  @media (prefers-reduced-motion: reduce){ .id-card::after{ animation:none; } }
   .card-corner{ position:absolute; width:22px; height:22px; border:2px solid var(--gold); opacity:0.85; }
   .card-corner.tl{ top:10px; left:10px; border-right:none; border-bottom:none; }
   .card-corner.br{ bottom:10px; right:10px; border-left:none; border-top:none; }
@@ -224,7 +255,31 @@
   .card-bar i.on{ background:linear-gradient(90deg, var(--crimson), var(--gold)); }
   .card-sub{ font-size:clamp(7px,1.2vw,10px); color:var(--muted); margin-top:8px; letter-spacing:0.04em; }
 
-  /* ================= SECTION SHARED ================= */
+  /* ================= ORGANIC SECTION DIVIDER ================= */
+  .divider{ position:relative; height:64px; margin-top:-1px; z-index:2; }
+  .divider svg{ position:absolute; inset:0; width:100%; height:100%; }
+
+  /* ================= HOW IT WORKS ================= */
+  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; position:relative; counter-reset:step; }
+  .steps::before{
+    content:""; position:absolute; top:26px; left:12%; right:12%; height:1px;
+    background:repeating-linear-gradient(90deg, var(--line-2) 0 8px, transparent 8px 16px);
+  }
+  .step{ position:relative; text-align:center; padding:0 24px; }
+  .step-num{
+    width:52px; height:52px; margin:0 auto 24px; border-radius:50%;
+    background:var(--void); border:1px solid var(--line-2);
+    display:flex; align-items:center; justify-content:center; position:relative; z-index:1;
+    font-family:'Big Shoulders',sans-serif; font-weight:900; font-size:20px; color:var(--gold);
+    transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  }
+  .step:hover .step-num{ transform:scale(1.1); box-shadow:0 0 0 6px rgba(245,166,35,0.08); border-color:var(--gold); }
+  .step h3{ font-family:'Outfit',sans-serif; text-transform:none; font-weight:600; font-size:17px; margin-bottom:10px; }
+  .step p{ font-size:13.5px; color:var(--muted); line-height:1.65; max-width:280px; margin:0 auto; }
+  @media (max-width:880px){
+    .steps{ grid-template-columns:1fr; gap:44px; }
+    .steps::before{ display:none; }
+  }
   section{ position:relative; padding:100px 0; z-index:2; }
   .section-head{ max-width:640px; margin-bottom:56px; }
   .section-tag{
@@ -237,27 +292,50 @@
   .section-head h2{ font-size:clamp(30px,4vw,46px); margin-bottom:14px; }
   .section-head p{ color:var(--muted); font-size:15.5px; line-height:1.7; }
 
-  /* ================= MODULES GRID ================= */
-  .modules{ display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  /* ================= MODULES GRID (bento, asymmetric) ================= */
+  .modules{ display:grid; grid-template-columns:repeat(6, 1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
   .module{
     background:var(--void);
     padding:36px 30px;
     position:relative;
-    transition: background .3s ease, box-shadow .3s ease;
+    grid-column:span 2;
+    transition: background .3s ease, box-shadow .3s ease, transform .35s ease;
+    transform: perspective(900px) rotateX(calc(var(--ry,0) * 1deg)) rotateY(calc(var(--rx,0) * 1deg));
     z-index:1;
+    opacity:0; transform-origin:center bottom;
+    animation: moduleIn .6s cubic-bezier(.2,.8,.2,1) forwards;
+    animation-play-state:paused;
   }
+  .modules.in .module{ animation-play-state:running; }
+  .modules.in .module:nth-child(1){ animation-delay:.02s; }
+  .modules.in .module:nth-child(2){ animation-delay:.10s; }
+  .modules.in .module:nth-child(3){ animation-delay:.18s; }
+  .modules.in .module:nth-child(4){ animation-delay:.26s; }
+  .modules.in .module:nth-child(5){ animation-delay:.34s; }
+  .modules.in .module:nth-child(6){ animation-delay:.42s; }
+  @keyframes moduleIn{ from{ opacity:0; transform:translateY(22px) scale(0.97); } to{ opacity:1; transform:translateY(0) scale(1); } }
+  .module:nth-child(1){ grid-column:span 4; }
+  .module:nth-child(2){ grid-column:span 2; }
+  .module:nth-child(3), .module:nth-child(4), .module:nth-child(5){ grid-column:span 2; }
+  .module:nth-child(6){ grid-column:span 6; display:flex; align-items:center; gap:40px; }
+  .module:nth-child(6) .module-top{ margin-bottom:0; flex-direction:column; align-items:flex-start; gap:14px; }
+  .module:nth-child(6) .module-body{ flex:1; }
+  @media (max-width:880px){ .module:nth-child(6){ flex-direction:column; align-items:flex-start; } }
   .module::before{ content:""; position:absolute; inset:0; opacity:0; transition:opacity .3s ease; pointer-events:none;
-    background:radial-gradient(220px 140px at 20% 0%, rgba(245,166,35,0.08), transparent 70%); z-index:-1; }
+    background:radial-gradient(220px 140px at var(--mx,20%) var(--my,0%), rgba(245,166,35,0.10), transparent 70%); z-index:-1; }
   .module:hover{ background:var(--surface); box-shadow:inset 0 1px 0 var(--line-2); }
   .module:hover::before{ opacity:1; }
   .module-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:26px; }
   .module .hex{ background:var(--surface-2); border:1px solid var(--line); transition:transform .3s ease, border-color .3s ease; }
-  .module:hover .hex{ transform:translateY(-3px); border-color:var(--line-2); }
+  .module:hover .hex{ transform:translateY(-3px) rotate(8deg); border-color:var(--line-2); }
   .module .hex svg{ width:18px; height:18px; }
   .module-code{ font-size:11px; color:var(--muted-2); }
   .module h3{ font-family:'Outfit',sans-serif; text-transform:none; font-weight:600; font-size:18px; letter-spacing:0; margin-bottom:10px; }
   .module p{ font-size:13.5px; color:var(--muted); line-height:1.6; }
   .module.accent-gold h3{ color:var(--gold); }
+  @media (prefers-reduced-motion: reduce){ .module{ animation:none; opacity:1; transform:none !important; } }
+  @media (max-width:880px){ .modules{ grid-template-columns:1fr 1fr; } .module{ grid-column:span 1 !important; } }
+  @media (max-width:560px){ .modules{ grid-template-columns:1fr; } }
 
   /* ================= PREMIUM ================= */
   .premium-wrap{
@@ -298,7 +376,8 @@
   .gradient-preview .g1{ position:absolute; inset:0; background:conic-gradient(from 200deg at 30% 30%, var(--crimson), var(--gold), #7c3aed, var(--crimson)); opacity:0.5; filter:blur(50px); animation:spin 14s linear infinite; }
   @keyframes spin{ to{ transform:rotate(360deg); } }
   .gradient-preview .frame{ position:absolute; inset:14px; border-radius:10px; border:1px solid rgba(255,255,255,0.12); backdrop-filter: blur(2px); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:10px; }
-  .gradient-preview .tag{ font-family:'Big Shoulders',sans-serif; font-weight:900; font-size:15px; letter-spacing:0.06em; background:linear-gradient(120deg,var(--gold),var(--crimson)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .gradient-preview .tag{ font-family:'Big Shoulders',sans-serif; font-weight:900; font-size:15px; letter-spacing:0.06em; background:linear-gradient(120deg,var(--gold),var(--crimson)); -webkit-background-clip:text; background-clip:text; color:transparent; transition:opacity .35s ease, transform .35s ease; }
+  .gradient-preview .tag.swap{ opacity:0; transform:translateY(6px); }
   .gradient-preview .cmd{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); background:rgba(0,0,0,0.4); padding:8px 14px; border-radius:5px; border:1px solid var(--line); }
 
   /* ================= CTA BAND ================= */
@@ -423,6 +502,7 @@
       <div class="brand-name">VALLENT <b>EXS</b></div>
     </div>
     <div class="nav-links">
+      <a href="#how">How It Works</a>
       <a href="#systems">Systems</a>
       <a href="#premium">Premium</a>
       <a href="commands.html">Commands</a>
@@ -435,6 +515,7 @@
 </nav>
 <div class="mobile-menu" id="mobileMenu">
 
+      <a href="#how">How It Works</a>
       <a href="#systems">Systems</a>
       <a href="#premium">Premium</a>
       <a href="commands.html">Commands</a>
@@ -446,18 +527,21 @@
 
 
 <header class="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
   <div class="wrap hero-grid">
     <div>
-      <div class="eyebrow">Hyper-Moderation Discord Bot</div>
-      <h1>PROTECT THE SERVER.<br><span class="accent">REWARD</span> THE MEMBERS.</h1>
-      <p class="lead">VALLENT EXS locks down raids in real time, runs your leveling economy with rank cards worth showing off, and hands your staff a full moderation & ticket toolkit — all from one bot.</p>
+      <div class="eyebrow"><span class="pulse-dot"></span>Hyper-Moderation Discord Bot</div>
+      <h1>LOCK IT DOWN.<br><span class="accent" id="rotWord">REWARD</span> THE GRIND.</h1>
+      <p class="lead">One bot that shuts down raids the second they start, turns chatting into an XP economy people actually chase, and gives your staff every moderation & ticket tool they'll ever ask for.</p>
       <div class="hero-ctas">
         <a href="https://discord.com/oauth2/authorize?client_id=1521998662496948407&permissions=8&scope=bot%20applications.commands" class="btn btn-primary">Add to Discord</a>
         <a href="https://discord.gg/ahHan43mqe" class="btn btn-ghost">Join Support Server</a>
       </div>
       <div class="trust-strip">
-        <div class="trust-item"><span class="num">25+</span><span class="lbl">Servers Protected</span></div>
-        <div class="trust-item"><span class="num">6</span><span class="lbl">Core Systems</span></div>
+        <div class="trust-item"><span class="num" data-count="25" data-suffix="+">0</span><span class="lbl">Servers Protected</span></div>
+        <div class="trust-item"><span class="num" data-count="6">0</span><span class="lbl">Core Systems</span></div>
         <div class="trust-item"><span class="num">24/7</span><span class="lbl">Anti-Nuke Watch</span></div>
       </div>
     </div>
@@ -484,6 +568,39 @@
   </div>
 </header>
 
+<div class="divider">
+  <svg viewBox="0 0 1440 64" preserveAspectRatio="none">
+    <path d="M0,32 C240,64 480,0 720,24 C960,48 1200,8 1440,32 L1440,64 L0,64 Z" fill="rgba(245,240,236,0.03)"></path>
+  </svg>
+</div>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="section-tag">// How it works</div>
+      <h2>Live in under<br>two minutes.</h2>
+      <p>No config files, no dashboard scavenger hunt. Invite it, flip on what you need, and it's already watching.</p>
+    </div>
+    <div class="steps" data-reveal>
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Add to your server</h3>
+        <p>One click, standard permissions — VALLENT EXS is online and watching the moment it joins.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Flip on what you need</h3>
+        <p>Toggle leveling, anti-nuke, tickets, and the rest from the dashboard or straight from Discord.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Let it run itself</h3>
+        <p>Raids get shut down, XP keeps climbing, tickets stay organized — all without you lifting a finger.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="systems">
   <div class="wrap">
     <div class="section-head" data-reveal>
@@ -500,7 +617,7 @@
           <div class="module-code mono">MOD // 01</div>
         </div>
         <h3>Moderation</h3>
-        <p>Warns, mutes, bans, auto-mod filters, and a full action log — everything your staff needs, kept in one place.</p>
+        <p>Warns, mutes, bans, auto-mod filters, and a full action log — the whole toolkit staff actually reach for, not just the ones that look good in a features list.</p>
       </div>
       <div class="module">
         <div class="module-top">
@@ -508,7 +625,7 @@
           <div class="module-code mono">SEC // 02</div>
         </div>
         <h3>Anti-Nuke</h3>
-        <p>Reads the audit log in real time. Mass channel deletes, mass bans, and role escalation get shut down before the damage lands.</p>
+        <p>Watches the audit log live. Mass deletes and role escalation get stopped before the server's even done loading the damage.</p>
       </div>
       <div class="module">
         <div class="module-top">
@@ -516,7 +633,7 @@
           <div class="module-code mono">LVL // 03</div>
         </div>
         <h3 class="accent-gold">Leveling & Rank Cards</h3>
-        <p>XP, levels, and rendered rank cards members actually want to flex — with a custom ID card system for full profiles.</p>
+        <p>XP, levels, and cards worth screenshotting — plus a full ID card system for profiles people actually flex.</p>
       </div>
       <div class="module">
         <div class="module-top">
@@ -524,7 +641,7 @@
           <div class="module-code mono">TIX // 04</div>
         </div>
         <h3>Ticket System</h3>
-        <p>Multi-category panels, dedicated staff roles per category, and full transcripts — support tickets that scale with your server.</p>
+        <p>Multi-category panels, dedicated staff per category, full transcripts. Support that scales past 50 members.</p>
       </div>
       <div class="module">
         <div class="module-top">
@@ -532,15 +649,17 @@
           <div class="module-code mono">GWY // 05</div>
         </div>
         <h3>Giveaways</h3>
-        <p>Button-based entry with a live participant list — no reactions to fumble, no ambiguity about who's actually in.</p>
+        <p>Button entry, live participant count — no reactions to fumble, no guessing who's actually in the draw.</p>
       </div>
       <div class="module accent-gold">
         <div class="module-top">
           <div class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="1.6"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2L12 16.4 5.7 21l2.3-7.2-6-4.6h7.6z"/></svg></div>
           <div class="module-code mono">PRM // 06</div>
         </div>
-        <h3 class="accent-gold">Premium</h3>
-        <p>Custom gradients, custom backgrounds, and a permanent XP edge — for the members who want their profile to look like theirs.</p>
+        <div class="module-body">
+          <h3 class="accent-gold">Premium</h3>
+          <p>Custom gradients, custom backgrounds, a permanent XP edge, and no-prefix commands — for members who want their profile to actually look like theirs.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -570,7 +689,7 @@
         <div class="gradient-preview">
           <div class="g1"></div>
           <div class="frame">
-            <div class="tag">rankcolor #B40BE3 #0B19E3</div>
+            <div class="tag" id="gradTag">rankcolor #B40BE3 #0B19E3</div>
             <div class="cmd">→ applied to your card, instantly</div>
           </div>
         </div>
@@ -616,6 +735,94 @@
     entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('in'); });
   }, { threshold: 0.15 });
   document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+</script>
+
+<script>
+  // ---- count-up numbers in the trust strip ----
+  (function(){
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const nums = document.querySelectorAll('.trust-item .num[data-count]');
+    if (!nums.length) return;
+    const animate = (el) => {
+      const target = parseInt(el.getAttribute('data-count'), 10);
+      const suffix = el.getAttribute('data-suffix') || '';
+      if (reduce) { el.textContent = target + suffix; return; }
+      const dur = 1100;
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min((now - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(eased * target) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    };
+    const cio = new IntersectionObserver((entries, obs) => {
+      entries.forEach(en => { if (en.isIntersecting) { animate(en.target); obs.unobserve(en.target); } });
+    }, { threshold: 0.6 });
+    nums.forEach(n => cio.observe(n));
+  })();
+
+  // ---- rotating word in the hero headline ----
+  (function(){
+    const el = document.getElementById('rotWord');
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const words = ['REWARD', 'LEVEL UP', 'ENGAGE', 'EMPOWER'];
+    let i = 0;
+    setInterval(() => {
+      el.classList.add('swap');
+      setTimeout(() => { i = (i + 1) % words.length; el.textContent = words[i]; el.classList.remove('swap'); }, 300);
+    }, 2600);
+  })();
+
+  // ---- rotating command example in the premium preview ----
+  (function(){
+    const el = document.getElementById('gradTag');
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const examples = [
+      'rankcolor #B40BE3 #0B19E3',
+      'rankcolor #F5A623 #A80F2C',
+      'rankcolor #20DCD2 #7C3AED',
+      'rankcolor #FF2878 #F5A623',
+    ];
+    let i = 0;
+    setInterval(() => {
+      el.classList.add('swap');
+      setTimeout(() => { i = (i + 1) % examples.length; el.textContent = examples[i]; el.classList.remove('swap'); }, 350);
+    }, 3200);
+  })();
+
+  // ---- subtle pointer-tilt on module cards ----
+  (function(){
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(hover: none)').matches) return;
+    document.querySelectorAll('.module').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        card.style.setProperty('--rx', ((px - 0.5) * 6).toFixed(2));
+        card.style.setProperty('--ry', ((0.5 - py) * 6).toFixed(2));
+        card.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--rx', 0);
+        card.style.setProperty('--ry', 0);
+      });
+    });
+  })();
+
+  // ---- cursor-follow glow in the hero ----
+  (function(){
+    const hero = document.querySelector('.hero');
+    if (!hero || window.matchMedia('(hover: none)').matches) return;
+    hero.addEventListener('mousemove', (e) => {
+      const r = hero.getBoundingClientRect();
+      hero.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+      hero.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+    });
+  })();
 </script>
 
 
